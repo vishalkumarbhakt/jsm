@@ -241,9 +241,9 @@
         <p><strong>Phone:</strong> +91-98765-43210</p>
         <p><strong>Email:</strong> info@jsmshikshaacademy.in</p>
         <form id="contactForm">
-          <input type="text" placeholder="Your Name" required />
-          <input type="email" placeholder="Your Email" required />
-          <textarea rows="3" placeholder="Message" required></textarea>
+          <input type="text" aria-label="Your Name" placeholder="Your Name" required />
+          <input type="email" aria-label="Your Email" placeholder="Your Email" required />
+          <textarea rows="3" aria-label="Message" placeholder="Message" required></textarea>
           <button type="submit">Send Message</button>
         </form>
         <p id="contactMessage" class="muted" aria-live="polite"></p>
@@ -254,17 +254,17 @@
       <div class="container">
         <h2>Inquiry</h2>
         <form id="inquiryForm">
-          <input type="text" placeholder="Parent Name" required />
-          <input type="text" placeholder="Student Name" required />
-          <select required>
+          <input type="text" aria-label="Parent Name" placeholder="Parent Name" required />
+          <input type="text" aria-label="Student Name" placeholder="Student Name" required />
+          <select aria-label="Desired Class" required>
             <option value="">Select Desired Class</option>
             <option>K.G.</option>
             <option>1 to 2</option>
             <option>3 to 5</option>
             <option>6 to 8</option>
           </select>
-          <input type="tel" placeholder="Contact Number" required />
-          <textarea rows="3" placeholder="Your Query" required></textarea>
+          <input type="tel" aria-label="Contact Number" placeholder="Contact Number" required />
+          <textarea rows="3" aria-label="Your Query" placeholder="Your Query" required></textarea>
           <button type="submit">Submit Inquiry</button>
         </form>
         <p id="inquiryMessage" class="muted" aria-live="polite"></p>
@@ -291,9 +291,9 @@
               <option value="student">Student</option>
               <option value="teacher">Teacher</option>
             </select>
-            <input id="name" type="text" placeholder="Full Name (required for register)" />
-            <input id="className" type="text" placeholder="Class (e.g., 5A)" />
-            <input id="email" type="email" placeholder="Email" required />
+            <input id="name" type="text" aria-label="Full Name" placeholder="Full Name (required for register)" />
+            <input id="className" type="text" aria-label="Class" placeholder="Class (e.g., 5A)" />
+            <input id="email" type="email" aria-label="Email" placeholder="Email" required />
             <button type="submit">Continue</button>
           </form>
           <p id="authMessage" class="muted" aria-live="polite"></p>
@@ -366,6 +366,13 @@
         panelIds.forEach((id) => document.getElementById(id).classList.remove('visible'));
         document.getElementById(panelId).classList.add('visible');
       }
+
+      function syncAuthRequirements() {
+        nameInput.required = authMode.value === 'register';
+      }
+
+      syncAuthRequirements();
+      authMode.addEventListener('change', syncAuthRequirements);
 
       authForm.addEventListener('submit', (event) => {
         event.preventDefault();
