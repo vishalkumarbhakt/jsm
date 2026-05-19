@@ -290,15 +290,14 @@
             <select id="role" required>
               <option value="student">Student</option>
               <option value="teacher">Teacher</option>
-              <option value="admin">Admin</option>
             </select>
             <input id="name" type="text" placeholder="Full Name (required for register)" />
             <input id="className" type="text" placeholder="Class (e.g., 5A)" />
             <input id="email" type="email" placeholder="Email" required />
-            <input id="adminKey" type="password" placeholder="Admin access key (admin only)" />
             <button type="submit">Continue</button>
           </form>
           <p id="authMessage" class="muted" aria-live="polite"></p>
+          <p class="muted">Admin dashboard access is available only through the secure administrator portal.</p>
         </div>
 
         <div id="studentPanel" class="card dashboard-panels">
@@ -347,19 +346,17 @@
       const nameInput = document.getElementById('name');
       const classInput = document.getElementById('className');
       const emailInput = document.getElementById('email');
-      const adminKeyInput = document.getElementById('adminKey');
       const message = document.getElementById('authMessage');
       const contactForm = document.getElementById('contactForm');
       const inquiryForm = document.getElementById('inquiryForm');
 
       const panelIds = ['studentPanel', 'teacherPanel', 'adminPanel'];
-      const adminEmail = 'admin@jsmshikshaacademy.in';
-      const adminAccessKey = 'JSM-ADMIN-2026';
       function getUsers() {
         try {
           const data = localStorage.getItem(usersKey);
           return data ? JSON.parse(data) : [];
         } catch (error) {
+          console.warn('Unable to parse saved user data. Resetting local storage.', error);
           localStorage.removeItem(usersKey);
           return [];
         }
@@ -378,7 +375,6 @@
         const email = emailInput.value.trim().toLowerCase();
         const name = nameInput.value.trim();
         const className = classInput.value.trim() || 'Not assigned';
-        const adminKey = adminKeyInput.value.trim();
 
         if (!emailInput.checkValidity()) {
           message.textContent = 'Please enter a valid email address.';
@@ -386,10 +382,6 @@
         }
 
         if (mode === 'register') {
-          if (userRole === 'admin') {
-            message.textContent = 'Admin registration is restricted.';
-            return;
-          }
           if (!name) {
             message.textContent = 'Name is required for registration.';
             return;
@@ -404,17 +396,7 @@
           return;
         }
 
-        if (userRole === 'admin') {
-          if (mode !== 'login' || email !== adminEmail || adminKey !== adminAccessKey) {
-            message.textContent = 'Invalid admin credentials.';
-            return;
-          }
-          showPanel('adminPanel');
-          message.textContent = 'Admin access granted for system monitoring and management.';
-          return;
-        }
-
-        const found = getUsers().find((u) => u.email === email && u.role === userRole);
+        const found = users.find((u) => u.email === email && u.role === userRole);
         if (!found) {
           message.textContent = 'Invalid credentials or role mismatch.';
           return;
@@ -429,8 +411,6 @@
           document.getElementById('teacherName').textContent = found.name;
           document.getElementById('teacherClass').textContent = found.className;
           showPanel('teacherPanel');
-        } else {
-          showPanel('adminPanel');
         }
       });
 
